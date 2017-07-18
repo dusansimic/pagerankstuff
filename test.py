@@ -2,7 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from gengraph import *
 
-g = genGraph(500)
+g = testFunc(20)
 
 pr = nx.pagerank(g)
 
@@ -11,6 +11,6 @@ with open('output', 'w') as f:
 
 print nx.info(g)
 
-nx.draw(g)
+nx.draw_circular(g)
 
 plt.show()
