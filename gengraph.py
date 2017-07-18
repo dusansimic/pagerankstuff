@@ -19,57 +19,81 @@ def testFunc(n):
   return g
 
 def genGraph(n):
-  centerPrecent = 0.39
-  inAndOutPrecent = 0.305
+  centerPrecent = 0.2989
+  inAndOutPrecent = 0.2337
+  tubesPrecent = 0.2337
   centerNum = int(n * centerPrecent)
   inAndOutNum = int(n * inAndOutPrecent)
   inAndOutEdgesPrecent = 0.5
   connectionPrecent = 0.05
   connectionNum = int((inAndOutNum + centerNum) / 2 * connectionPrecent)
-  g = nx.Graph()
+  g = nx.DiGraph()
   
-  # cleanup, remove single nodes
-  state = True
-  for nodeIndex in range(inAndOutNum):
+  # adding in all nodes
+  for nodeIndex in range(n):
     g.add_node(nodeIndex)
-    if nodeIndex % 2 == 1:
-      if state:
-        state = False
-        g.add_edge(nodeIndex-1, nodeIndex)
-        for edgeIndex in range(1, int(math.sqrt(nodeIndex))):
-          g.add_edge(random.randint(0, nodeIndex-2), nodeIndex)
-      else:
-        state = True
+  
 
-  # add center giant
-  state = True
-  for nodeIndex in range(centerNum):
-    g.add_node(inAndOutNum + nodeIndex)
-    if nodeIndex % 2 == 1:
-      if state:
-        state = False
-        g.add_edge(inAndOutNum + nodeIndex - 1, nodeIndex)
-      else:
-        state = True
+  # making three giant networks
+  count = 0
+  for nodeIndex in range(inAndOutNum * 2):
+    a = random.randint(0, inAndOutNum)
+    b = random.randint(0, inAndOutNum)
+    count += 1
+    g.add_edge(a, b)
 
-  #for connectionIndex in range(connectionNum):
-  #  g.add_edge(random.randint(0, nodeIndex), random.randint(inAndOutNum, inAndOutNum + nodeIndex))
+  count = 0
+  for nodeIndex in range(centerNum * 2):
+    a = random.randint(inAndOutNum + 1, inAndOutNum + centerNum)
+    b = random.randint(inAndOutNum + 1, inAndOutNum + centerNum)
+    count += 1
+    g.add_edge(a, b)
+  
+  count = 0
+  for nodeIndex in range(inAndOutNum * 2):
+    a = random.randint(inAndOutNum + centerNum + 1, inAndOutNum + centerNum + inAndOutNum)
+    b = random.randint(inAndOutNum + centerNum + 1, inAndOutNum + centerNum + inAndOutNum)
+    count += 1
+    g.add_edge(a, b)
 
-  # add out giant 
-  state = False
+  # connect masters
+  masterIn = 0
+  masterCount = 0
   for nodeIndex in range(inAndOutNum):
-    g.add_node(inAndOutNum + centerNum + nodeIndex)
-    if nodeIndex % 2 == 1:
-      if state:
-        state = False
-        g.add_edge(inAndOutNum + centerNum + nodeIndex - 1, nodeIndex)
-        for edgeIndex in range(1, int(math.sqrt(nodeIndex))):
-          g.add_edge(random.randint(inAndOutNum + centerNum, inAndOutNum + centerNum + nodeIndex-2), inAndOutNum + nodeIndex)
-      else:
-        state = True
+    count = g.in_degree(nodeIndex)
+    if count > masterCount:
+      masterIn = nodeIndex
+      masterCount = count
+  
+  masterCenterIn = 0
+  masterCenterOut = 0
+  masterCount = 0
+  masterCountOut = 0
+  for nodeIndex in range(centerNum):
+    count = g.in_degree(inAndOutNum + nodeIndex + 1)
+    if count > masterCount:
+      masterCenterIn = nodeIndex
+      masterCount = count
+    count = g.out_degree(inAndOutNum + nodeIndex + 1)
+    if count > masterCountOut:
+      masterCenterOut = nodeIndex
+      masterCountOut = count
+
+  masterOut = 0
+  masterCount = 0
+  for nodeIndex in range(inAndOutNum):
+    count = g.out_degree(inAndOutNum + centerNum + nodeIndex + 1)
+    if count > masterCount:
+      masterOut = nodeIndex
+      masterCount = count
+
+  g.add_edge(masterIn, masterCenterOut)
+  g.add_edge(masterCenterIn, masterOut)
+
+  #print masterIn, masterCenterIn, masterCenterOut, masterOut
   
   # cleanup, remove single nodes
-  for i in range(inAndOutNum + centerNum + inAndOutNum):
+  for i in range(n):
     if g.degree(i) <= 1:
       g.remove_node(i)
 
