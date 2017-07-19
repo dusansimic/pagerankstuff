@@ -1,14 +1,16 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+from gengraph import *
 
-gleft = nx.circular_ladder_graph(50)
- 
-# treba da se sloze i da se linkuju
+g = genGraph(50)
 
-gmaster = gleft
+pr = nx.pagerank(g)
 
-print nx.info(gmaster)
+with open('output', 'w') as f:
+  f.write(str(pr))
 
-nx.draw(gmaster)
+#print nx.info(g)
+
+nx.draw_networkx(g)
 
 plt.show()

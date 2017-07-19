@@ -58,6 +58,9 @@ def genGraph(n):
     b = random.randint(inAndOutNum + centerNum + 1, inAndOutNum + centerNum + inAndOutNum)
     count += 1
     g.add_edge(a, b)
+  
+  for nodeIndex in range(1, tubesNum - 1):
+    g.add_edge(inAndOutNum * 2 + centerNum + nodeIndex, inAndOutNum * 2 + centerNum + nodeIndex + 1)
 
   # connect masters
   masterIn = 0
@@ -90,8 +93,13 @@ def genGraph(n):
       masterOut = inAndOutNum + centerNum + nodeIndex + 1
       masterCount = count
 
+  beginingTubes = inAndOutNum * 2 + centerNum + 1
+  endingTubes = inAndOutNum * 2 + centerNum + tubesNum
+
   g.add_edge(masterIn, masterCenterOut)
   g.add_edge(masterCenterIn, masterOut)
+  g.add_edge(masterOut, beginingTubes)
+  g.add_edge(endingTubes, masterIn)
 
   print masterIn <= inAndOutNum, masterCenterIn > inAndOutNum and masterCenterIn <= inAndOutNum + centerNum, masterCenterOut > inAndOutNum and masterCenterOut <= inAndOutNum + centerNum, masterOut > inAndOutNum + centerNum and masterOut <= inAndOutNum * 2 + centerNum
 
