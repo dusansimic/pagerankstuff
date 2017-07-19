@@ -59,7 +59,7 @@ def genGraph(n):
     count += 1
     g.add_edge(a, b)
   
-  for nodeIndex in range(1, tubesNum):
+  for nodeIndex in range(1, tubesNum - 1):
     g.add_edge(inAndOutNum * 2 + centerNum + nodeIndex, inAndOutNum * 2 + centerNum + nodeIndex + 1)
 
   # connect masters
