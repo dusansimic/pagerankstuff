@@ -2,7 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from gengraph import *
 
-g = genGraph(100)
+g = genGraph(2000)
 
 pr = nx.pagerank(g)
 

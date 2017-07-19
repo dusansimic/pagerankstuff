@@ -19,14 +19,17 @@ def testFunc(n):
   return g
 
 def genGraph(n):
-  centerPrecent = 0.2989
-  inAndOutPrecent = 0.2337
-  tubesPrecent = 0.2337
+  centerPrecent = 0.275
+  inAndOutPrecent = 0.215
+  tubesPrecent = 0.215
+  discPrecent = 0.08
   centerNum = int(n * centerPrecent)
   inAndOutNum = int(n * inAndOutPrecent)
   inAndOutEdgesPrecent = 0.5
   connectionPrecent = 0.05
   connectionNum = int((inAndOutNum + centerNum) / 2 * connectionPrecent)
+  tubesNum = int(n * tubesPrecent)
+  discNum = int(n * discPrecent)
   g = nx.DiGraph()
   
   # adding in all nodes
@@ -72,11 +75,11 @@ def genGraph(n):
   for nodeIndex in range(centerNum):
     count = g.in_degree(inAndOutNum + nodeIndex + 1)
     if count > masterCount:
-      masterCenterIn = nodeIndex
+      masterCenterIn = inAndOutNum + nodeIndex + 1
       masterCount = count
     count = g.out_degree(inAndOutNum + nodeIndex + 1)
     if count > masterCountOut:
-      masterCenterOut = nodeIndex
+      masterCenterOut = inAndOutNum + nodeIndex + 1
       masterCountOut = count
 
   masterOut = 0
@@ -84,17 +87,20 @@ def genGraph(n):
   for nodeIndex in range(inAndOutNum):
     count = g.out_degree(inAndOutNum + centerNum + nodeIndex + 1)
     if count > masterCount:
-      masterOut = nodeIndex
+      masterOut = inAndOutNum + centerNum + nodeIndex + 1
       masterCount = count
 
   g.add_edge(masterIn, masterCenterOut)
   g.add_edge(masterCenterIn, masterOut)
 
+  print masterIn <= inAndOutNum, masterCenterIn > inAndOutNum and masterCenterIn <= inAndOutNum + centerNum, masterCenterOut > inAndOutNum and masterCenterOut <= inAndOutNum + centerNum, masterOut > inAndOutNum + centerNum and masterOut <= inAndOutNum * 2 + centerNum
+
   #print masterIn, masterCenterIn, masterCenterOut, masterOut
   
   # cleanup, remove single nodes
-  for i in range(n):
-    if g.degree(i) <= 1:
-      g.remove_node(i)
+  # disconnected components will be used
+  #for i in range(n):
+  #  if g.degree(i) <= 1:
+  #    g.remove_node(i)
 
   return g
