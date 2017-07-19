@@ -1,14 +1,23 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+from gengraph import *
 
-gleft = nx.circular_ladder_graph(50)
- 
-# treba da se sloze i da se linkuju
+import pylab as plt
+from networkx.drawing.nx_agraph import graphviz_layout, to_agraph
+import pygraphviz as pgv
 
-gmaster = gleft
+g = genGraph(50)
 
-print nx.info(gmaster)
+pr = nx.pagerank(g)
 
-nx.draw(gmaster)
+with open('output', 'w') as f:
+  f.write(str(pr))
 
-plt.show()
+#print nx.info(g)
+
+a = to_agraph(g)
+
+print a
+
+a.layout('dot')
+a.draw('graph.png')
