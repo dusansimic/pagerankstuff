@@ -45,29 +45,17 @@ def genGraph(n):
     count += 1
     g.add_edge(a, b)
 
-  count = 0
   for nodeIndex in range(centerNum * 2):
     a = random.randint(inAndOutNum + 1, inAndOutNum + centerNum)
     b = random.randint(inAndOutNum + 1, inAndOutNum + centerNum)
-    count += 1
     g.add_edge(a, b)
   
-  count = 0
   for nodeIndex in range(inAndOutNum * 2):
     a = random.randint(inAndOutNum + centerNum + 1, inAndOutNum + centerNum + inAndOutNum)
     b = random.randint(inAndOutNum + centerNum + 1, inAndOutNum + centerNum + inAndOutNum)
-    count += 1
     g.add_edge(a, b)
-  
-<<<<<<< HEAD
-<<<<<<< HEAD
-  for nodeIndex in range(1, tubesNum):
-=======
+
   for nodeIndex in range(1, tubesNum - 1):
->>>>>>> c312993e7655333ec922c09687403982d621ec32
-=======
-  for nodeIndex in range(1, tubesNum - 1):
->>>>>>> c312993e7655333ec922c09687403982d621ec32
     g.add_edge(inAndOutNum * 2 + centerNum + nodeIndex, inAndOutNum * 2 + centerNum + nodeIndex + 1)
 
   # connect masters
